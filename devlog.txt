@@ -4,3 +4,5 @@ Changes to design doc:
 - In "Site map for front end" /home: Specified more what the home page will look like (stories the user has contributed to will be displayed) --> scroll based
 - In "Site map for front end" /edit: Specified that the user cannot delete content, can only add
 - In "Site map for front end" /edit: Specified that user cannot contribute to a story they've already contributed to
+- In "Components": Gave descriptions for users.db and edits.db
+- In "Components": Specified what db.py is (not a database but a python file used to organize our databases and write SQL code)
