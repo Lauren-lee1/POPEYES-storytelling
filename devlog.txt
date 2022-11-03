@@ -1,0 +1,6 @@
+vivianT -- 2022-11-02 20:45
+Changes to design doc:
+- In "How each component relates to each other section" under the search.html description, changed "words" to "titles" to clarify that the user is searching for story titles.
+- In "Site map for front end" /home: Specified more what the home page will look like (stories the user has contributed to will be displayed) --> scroll based
+- In "Site map for front end" /edit: Specified that the user cannot delete content, can only add
+- In "Site map for front end" /edit: Specified that user cannot contribute to a story they've already contributed to
