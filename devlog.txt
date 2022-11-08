@@ -1,8 +1,60 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+USAGE:
+* Replace all fields, angle brackets included, with specified info.
+  eg, pd <pd#> --> pd 3
+* Delete these instructions once all teammates understand usage.
+  (from tilde bar above to tilde bar below)
+* rename this file devlog.txt
+
+devlog--
+Use keyboard shortcut to jump to end,
+ replicate entry template, (Ctrl-Shift up x5, Ctrl-X, Ctrl-V x2)
+ modify appropriately.
+Each entry should begin with the following format:
+ firstL -- TIMESTAMP\n
+e.g.: 
+clydeS -- 2999-12-31 23:59
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+POPEYES
+Vivian Teo
+Ian Jiang
+Lauren Lee
+pd 7
+---------------------
+P00: Collaborative Storytelling
+
+
+ ______   ______   __   __   __       ______   _______     
+/_____/\ /_____/\ /_/\ /_/\ /_/\     /_____/\ /______/\    
+\:::_ \ \\::::_\/_\:\ \\ \ \\:\ \    \:::_ \ \\::::__\/__  
+ \:\ \ \ \\:\/___/\\:\ \\ \ \\:\ \    \:\ \ \ \\:\ /____/\ 
+  \:\ \ \ \\::___\/_\:\_/.:\ \\:\ \____\:\ \ \ \\:\\_  _\/ 
+   \:\/.:| |\:\____/\\ ..::/ / \:\/___/\\:\_\ \ \\:\_\ \ \ 
+    \____/_/ \_____\/ \___/_(   \_____\/ \_____\/ \_____\/ 
+==============================================================
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
 vivianT -- 2022-11-02 20:45
-Changes to design doc:
-- In "How each component relates to each other section" under the search.html description, changed "words" to "titles" to clarify that the user is searching for story titles.
-- In "Site map for front end" /home: Specified more what the home page will look like (stories the user has contributed to will be displayed) --> scroll based
-- In "Site map for front end" /edit: Specified that the user cannot delete content, can only add
-- In "Site map for front end" /edit: Specified that user cannot contribute to a story they've already contributed to
-- In "Components": Gave descriptions for users.db and edits.db
-- In "Components": Specified what db.py is (not a database but a python file used to organize our databases and write SQL code)
+--------------------------------------------------------------
+* edited design doc:
+    * In "How each component relates to each other section" under the search.html description, changed "words" to "titles" to clarify that the user is searching for story titles.
+    * In "Site map for front end" /home: Specified more what the home page will look like (stories the user has contributed to will be displayed) --> scroll based
+    * In "Site map for front end" /edit: Specified that the user cannot delete content, can only add
+    * In "Site map for front end" /edit: Specified that user cannot contribute to a story they've already contributed to
+    * In "Components": Gave descriptions for users.db and edits.db
+    * In "Components": Specified what db.py is (not a database but a python file used to organize our databases and write SQL code)
+==============================================================
+laurenL -- 2022-11-07 13:00
+--------------------------------------------------------------
+* created login.html 
+* created app.py
+* edited already existing login.html code from previous homework to include a register form
+==============================================================
+laurenL -- 2022-11-08 15:56
+--------------------------------------------------------------
+* formatted register and login button form in login.html
+* noted next steps on login.html and app.py
+* created db_user.py to add user info into db
+==============================================================
