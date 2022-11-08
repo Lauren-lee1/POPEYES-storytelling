@@ -39,7 +39,7 @@ def authenticate():
         if request.method == 'GET':
             session['username'] = request.args['username']
         print(session)
-        return render_template('response.html')
+        return render_template('home.html')
     #empty pw or user
     if "" == user and "" == pw:
         return render_template('login.html', message = "Please type in a username and password")
@@ -57,6 +57,10 @@ def authenticate():
     #unidentified error
     else:
         return render_template('login.html', message = "unidentified")
+
+@app.route("/home", methods=['GET', 'POST'])
+def register():
+    ##adds data into db
 
 @app.route("/logout", methods=['GET', 'POST'])
 def logout():

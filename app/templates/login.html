@@ -3,8 +3,7 @@
 <!-- POPEYES: Lauren Lee, Vivian Teo, Ian Jiang
 SoftDev
 K19 -- Sessions Greetings
-2022-11-03
-time spent: 3-->
+-->
 
 
 <html>
@@ -22,6 +21,7 @@ time spent: 3-->
     <h3>
       {{message}}
     </h3>
+    <strong>LOGIN</strong>
     <form action="/auth" method="POST"> 
       <!-- action when form submit is set by action=, this cause is sent to new page on webpage-->
       Username:
@@ -30,20 +30,21 @@ time spent: 3-->
       <br> Password:
       <input type="text" name="pass">
       <!--text input, name give label for reference  -->
+      <br>
       <input type="submit" name="login" value = "login"> 
       <!--submit button, name give label for reference  -->
     </form>
     <br>
-     <!-- action when form submit is set by action=, this cause is sent to new page on webpage-->
-     <form action="/auth" method="POST">
-     Username:
-     <input type="text" name="username">
-     <!--text input, name give label for reference  -->
-     <br> Password:
-     <input type="text" name="pass">
-     <!--text input, name give label for reference  -->
-    <input type="submit" name="register" value = "register"> 
+    <strong>REGISTER</strong>
+    <form action="/home" method="POST">
+      Username:
+      <input type="text" name="username">
+      <br> Password:
+      <input type="text" name="pass">
+      <br>
+      <input type="submit" name="register" value = "register"> 
     </form>
+    <br>
   </body>
 
 </html>
