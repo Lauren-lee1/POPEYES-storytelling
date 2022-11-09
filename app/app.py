@@ -60,11 +60,23 @@ def authenticate():
 
 @app.route("/home", methods=['GET', 'POST'])
 def register():
-    ##adds data into db
+    # if request.method == 'POST':
+    #     user = request.form['username']
+    #     pw = request.form['pass']
+    # if request.method == 'GET':
+    #     user = request.args['username']
+    #     pw = request.args['pass']
+
+    # ##adds data into db
+    # if user not in students.db and pw not in students.db:
+    #     # add user to students.db
+    
+    return render_template('home.html')
 
 @app.route("/logout", methods=['GET', 'POST'])
 def logout():
-    session.pop('username')
+    if 'username' in session:
+        session.pop('username')
     return redirect('http://127.0.0.1:5000/')
   
 

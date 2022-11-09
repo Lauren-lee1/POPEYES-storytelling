@@ -58,3 +58,8 @@ laurenL -- 2022-11-08 15:56
 * noted next steps on login.html and app.py
 * created db_user.py to add user info into db
 ==============================================================
+vivianT -- 2022-11-09 12:45
+--------------------------------------------------------------
+* rendered home.html template for /home route
+* only pop username from session if it actually exists in session
+==============================================================
