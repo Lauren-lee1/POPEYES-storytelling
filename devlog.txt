@@ -63,6 +63,11 @@ vivianT -- 2022-11-09 12:45
 * rendered home.html template for /home route
 * only pop username from session if it actually exists in session
 ==============================================================
+laurenL -- 2022-11-09 22:58
+--------------------------------------------------------------
+* organized repo
+* added launch codes in readme
+==============================================================
 vivianT -- 2022-11-09 23:22
 --------------------------------------------------------------
 * created function in db_user.py to add usernames and passwords to the database (still an error that needs to be fixed)
