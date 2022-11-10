@@ -1,8 +1,8 @@
 # POPEYES: Lauren Lee, Vivian Teo, Ian Jiang
 # SoftDev
-# K19 -- Sessions Greetings
-# 2022-11-03
-# time spent: 3
+# P00 -- Storytelling
+# 2022-11-0
+# time spent: 
 
 
 
@@ -10,7 +10,11 @@
 import re
 from flask import Flask, render_template, request, session, redirect
 import os
+from db_user import *
 app = Flask(__name__)    #create Flask object
+
+# creates users.db and edits.db if they don't exist already
+create_tables()
 
 username = "POPEYES"
 password = "chicken"
@@ -39,7 +43,7 @@ def authenticate():
         if request.method == 'GET':
             session['username'] = request.args['username']
         print(session)
-        return render_template('home.html')
+        return render_template('home.html', username = username)
     #empty pw or user
     if "" == user and "" == pw:
         return render_template('login.html', message = "Please type in a username and password")
@@ -60,18 +64,20 @@ def authenticate():
 
 @app.route("/home", methods=['GET', 'POST'])
 def register():
-    # if request.method == 'POST':
-    #     user = request.form['username']
-    #     pw = request.form['pass']
-    # if request.method == 'GET':
-    #     user = request.args['username']
-    #     pw = request.args['pass']
+    if request.method == 'POST':
+        user = request.form['username']
+        pw = request.form['pass']
+    if request.method == 'GET':
+        user = request.args['username']
+        pw = request.args['pass']
 
     # ##adds data into db
-    # if user not in students.db and pw not in students.db:
+    # if user_does_not_exists(username):
     #     # add user to students.db
+    #     add_user(username, password)
+
     
-    return render_template('home.html')
+    return render_template('home.html', username = username)
 
 @app.route("/logout", methods=['GET', 'POST'])
 def logout():
