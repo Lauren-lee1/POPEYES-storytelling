@@ -71,13 +71,13 @@ def register():
         user = request.args['username']
         pw = request.args['pass']
 
-    # ##adds data into db
-    # if user_does_not_exists(username):
-    #     # add user to students.db
-    #     add_user(username, password)
-
-    
-    return render_template('home.html', username = username)
+    ##adds data into db
+    if user_does_not_exists(user):
+        # add user to students.db
+        add_user(user, pw)
+        return render_template('home.html', username = user)
+    else:
+        return render_template('login.html', message = "User already exists")
 
 @app.route("/logout", methods=['GET', 'POST'])
 def logout():
