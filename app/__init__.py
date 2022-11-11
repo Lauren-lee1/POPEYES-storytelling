@@ -21,7 +21,7 @@ app.secret_key = os.urandom(32)
 @app.route("/", methods=['GET', 'POST'])
 def disp_loginpage():
     if 'username' in session:
-        return render_template('response.html')
+        return render_template('home.html', username = session['username'])
     return render_template('login.html', message = "Type in a username and password")  
 
 
@@ -90,9 +90,14 @@ def register():
 def submit_story():
     if request.method == 'POST':
         text = request.form['text']
+        title = request.form['title']
     if request.method == 'GET':
         text = request.args['text']
+        title = request.args['title']
 
+    if story_does_not_exist(title):
+        add_story(title, text) # add the text to the database
+        # add_to_contributed(get_id(title), session['username']) # update the list of contributed stories
     print(session)
     if 'username' in session:
         return render_template('home.html', username = session['username'])

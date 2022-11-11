@@ -7,17 +7,19 @@
 import sqlite3   #enable control of an sqlite database
 import csv       #facilitate CSV I/O
 
+from time import ctime      #use to get time last edited
 
-# #delete table if needed (testing purposes)
-# DB_FILE="users.db"
+#delete table if needed (testing purposes)
+# DB_FILE="edits.db"
 # db = sqlite3.connect(DB_FILE) 
 # c = db.cursor() 
-# c.execute("DELETE FROM users WHERE name='marc'")
-# c.execute("DELETE FROM users")
+# # c.execute("DROP TABLE edits")
+# # c.execute("DELETE FROM users")
 
-# table = c.execute("SELECT * from users")
+# table = c.execute("SELECT * from edits")
 # print(table.fetchall())
-
+# db.commit()
+# db.close()
 def create_tables():
     # users table
     DB_FILE="users.db"
@@ -109,7 +111,60 @@ def correct_account(user, passw):
     db.close()  #close database
     return exists
 
+def add_story(title, text):
+    DB_FILE="edits.db"
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
 
+    #adds story into database
+    c.execute(f"INSERT INTO edits (title, content, time, latest_change) VALUES ('{title}', '{text}', '{ctime()}', '{text}')")
+
+    #print content into terminal
+    print(c.execute("SELECT content FROM edits").fetchall())
+    db.commit() #save changes
+    db.close() #close database
+
+# def add_to_contributed(id, user):
+#     DB_FILE="users.db"
+#     db = sqlite3.connect(DB_FILE)
+#     c = db.cursor()
+
+#     id_list = c.execute(f"SELECT id_list FROM users WHERE name = '{user}'").fetchone()
+#     if id_list is None:
+#         c.execute(f"UPDATE users SET id_list = '{id}' WHERE name = '{user}'")
+#     else:
+#         c.execute(f"UPDATE users SET id_list = '{id_list}{id}' WHERE name = '{user}'")
+    
+#     db.commit()
+#     db.close()
+    
+#used for add_to_contributed(id,user)
+def get_id(title):
+    DB_FILE="edits.db"
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+
+    #get id of story with given title
+    id = c.execute(f"SELECT id FROM edits WHERE title = '{title}'").fetchone()
+
+    db.commit()
+    db.close()
+    return id
+
+def story_does_not_exist(title):
+    DB_FILE="edits.db"
+    db = sqlite3.connect(DB_FILE) #open if file exists, otherwise create
+    c = db.cursor()               #facilitate db ops -- you will use cursor to trigger db events
+    
+    titlie = c.execute(f"SELECT title FROM edits WHERE title = '{title}'").fetchone()
+    if titlie is None:
+        exists = False
+    else:
+        exists = True
+    
+    db.commit() #save changes
+    db.close()  #close database
+    return exists == False
 '''
 # with open('students.csv', newline='') as csvfile:
 #     reader = csv.DictReader(csvfile)
