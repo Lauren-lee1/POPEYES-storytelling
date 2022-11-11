@@ -90,5 +90,9 @@ vivianT -- 2022-11-10 19:04
 * created a submit route in __init__.py
 * CONCERN: how to make it so that user can't just type http://127.0.0.1:5000/auth into the browser and get error... basically we only want to limit what happens in /auth after the login button is pressed
 ==============================================================
-
-
+ianJ -- 2022-11-11 1:31
+--------------------------------------------------------------
+* new stories get added to edits.db
+* added title input box for creating new stories (has yet to be formatted nicely)
+* created add_story and story_does_not_exist functions in db_user.py (response for when duplicate story title needs to be made)
+* attempted to update the list of stories the user has contributed to. Made add_to_contributed and get_id function but there are bugs that need to be fixed
