@@ -16,14 +16,23 @@ time spent: 3-->
   
   
       <h3>
-        TABLE OF CONTENTS
+        user: {{username}} <br><br>
+
+        TABLE OF CONTENTS <br><br>
+
+        Write a NEW story:
+        <form action="/submit" method="POST">
+          <input type="text" name="text">
+          <input type="submit" name="story" value="Submit Story"></input>
+        </form>
+
+
         <form action="/logout" method="POST">
           <input type="submit" name="logout" value="Logout"></input>
         </form>
         
       </h3>
 
-      user: {{username}}
       
       <br>
     </body>

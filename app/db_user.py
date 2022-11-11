@@ -10,8 +10,13 @@ import csv       #facilitate CSV I/O
 
 # #delete table if needed (testing purposes)
 # DB_FILE="users.db"
-# db = sqlite3.connect(DB_FILE) #open if file exists, otherwise create
-# db.execute("DROP TABLE if exists users")
+# db = sqlite3.connect(DB_FILE) 
+# c = db.cursor() 
+# c.execute("DELETE FROM users WHERE name='marc'")
+# c.execute("DELETE FROM users")
+
+# table = c.execute("SELECT * from users")
+# print(table.fetchall())
 
 def create_tables():
     # users table
@@ -19,7 +24,6 @@ def create_tables():
 
     db = sqlite3.connect(DB_FILE) #open if file exists, otherwise create
     c = db.cursor()               #facilitate db ops -- you will use cursor to trigger db events
-
     # users table
     c.execute("CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY, name TEXT, pw TEXT, id_list TEXT, editing TEXT)")
     
@@ -46,8 +50,11 @@ def add_user(user, passw):
     # add newly registered people in
 
     c.execute("INSERT INTO users (name, pw) VALUES ('"+user+"', '"+passw+"')")
+    
+    #prints users table
     table = c.execute("SELECT * from users")
     print(table.fetchall())
+
     db.commit() #save changes
     db.close()  #close database
 
@@ -56,17 +63,51 @@ def user_does_not_exists(user):
     db = sqlite3.connect(DB_FILE) #open if file exists, otherwise create
     c = db.cursor()               #facilitate db ops -- you will use cursor to trigger db events
     
-    num = c.execute("SELECT 1 FROM users WHERE name = '"+ user + "'")
-    print(num.fetchone())
-    if num is None:
+    namie = c.execute("SELECT name FROM users WHERE name = '"+ user + "'").fetchone()
+    # print(namie)
+    if namie is None:
         exists = False
     else:
         exists = True
 
+    # prints users table
+    table = c.execute("SELECT * from users")
+    print(table.fetchall())
+    
     print(exists)
+
     db.commit() #save changes
     db.close()  #close database
     return exists == False
+
+def correct_account(user, passw):
+    DB_FILE="users.db"
+    db = sqlite3.connect(DB_FILE) #open if file exists, otherwise create
+    c = db.cursor()               #facilitate db ops -- you will use cursor to trigger db events
+    
+    # check if username is in table
+    namie = c.execute("SELECT name FROM users WHERE name = '"+ user + "'").fetchone()
+    print(namie)
+    if namie is None:
+        exists = False
+    else:
+        exists = True
+
+    # check if password is in table
+    passie = c.execute("SELECT pw FROM users WHERE pw = '"+ passw + "'").fetchone()
+    print(passie)
+    if passie is None:
+        exists = False
+
+    # prints table
+    table = c.execute("SELECT * from users")
+    print(table.fetchall())
+    
+    print(exists)
+
+    db.commit() #save changes
+    db.close()  #close database
+    return exists
 
 
 '''

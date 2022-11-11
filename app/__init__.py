@@ -15,9 +15,6 @@ app = Flask(__name__)    #create Flask object
 
 # creates users.db and edits.db if they don't exist already
 create_tables()
-
-username = "POPEYES"
-password = "chicken"
 exception = "username and pw wrong"
 app.secret_key = os.urandom(32)
 
@@ -36,28 +33,30 @@ def authenticate():
     if request.method == 'GET':
         user = request.args['username']
         pw = request.args['pass']
+
     #pw and user correct
-    if username in  user and password in pw:
+    if correct_account(user,pw):
+
+        #make sessions
         if request.method == 'POST':
             session['username'] = request.form['username']
         if request.method == 'GET':
             session['username'] = request.args['username']
         print(session)
-        return render_template('home.html', username = username)
+
+        return render_template('home.html', username = user)
+    #pw/user incorrect
+    else:
+        return render_template('login.html', message = "Please input a correct username and password")
+
+
     #empty pw or user
     if "" == user and "" == pw:
         return render_template('login.html', message = "Please type in a username and password")
     elif "" == user:
         return render_template('login.html', message = "Please type in a username")
     elif "" == pw:
-        return render_template('login.html', message = "Please type in a password")
-    #wrong pw or user
-    if user != username and pw != password:
-        return render_template('login.html', message = "Please input a correct username and password")
-    elif user != username:
-        return render_template('login.html', message = "Please input a correct username")
-    elif pw != password:
-        return render_template('login.html', message = "Please input a correct password")
+        return render_template('login.html', message = "Please type in a password")    
     #unidentified error
     else:
         return render_template('login.html', message = "unidentified")
@@ -75,9 +74,31 @@ def register():
     if user_does_not_exists(user):
         # add user to students.db
         add_user(user, pw)
+
+        # make sessions
+        if request.method == 'POST':
+            session['username'] = request.form['username']
+        if request.method == 'GET':
+            session['username'] = request.args['username']
+        print(session)
+
         return render_template('home.html', username = user)
     else:
         return render_template('login.html', message = "User already exists")
+
+@app.route("/submit", methods=['GET', 'POST'])
+def submit_story():
+    if request.method == 'POST':
+        text = request.form['text']
+    if request.method == 'GET':
+        text = request.args['text']
+
+    print(session)
+    if 'username' in session:
+        return render_template('home.html', username = session['username'])
+    else:
+        return render_template('login.html', message = "Type in a username and password")  
+
 
 @app.route("/logout", methods=['GET', 'POST'])
 def logout():
