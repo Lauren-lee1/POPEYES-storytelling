@@ -96,3 +96,12 @@ ianJ -- 2022-11-11 1:31
 * added title input box for creating new stories (has yet to be formatted nicely)
 * created add_story and story_does_not_exist functions in db_user.py (response for when duplicate story title needs to be made)
 * attempted to update the list of stories the user has contributed to. Made add_to_contributed and get_id function but there are bugs that need to be fixed
+==============================================================
+vivianT -- 2022-11-13 1:18
+--------------------------------------------------------------
+* Formatted the form submission for Title and Content better in home.html
+* If the user submits a story that already exists, output a message on home.html that lets the user know
+* add_to_contributed(title, user) now works; story_id is successfully added to the list in users.db, the users in users.db can now have a list of story ids they've contributed to
+* Created all_stories_contributed_to(user) in db_user.py so that it'll output a dict containing all the stories a user has contributed to with the title being the key and content being the value
+* Successfully incorporated/displayed the stories a user has contributed to using jinja in home.html and the dict that's outputted by all_stories_contributed_to(user)
+==============================================================

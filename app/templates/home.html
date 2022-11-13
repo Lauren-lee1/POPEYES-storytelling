@@ -22,19 +22,32 @@ time spent: 3-->
 
         Write a NEW story:
         <form action="/submit" method="POST">
+          <br> Title:
           <input type="text" name="title">
+          <br> Content:
           <input type="text" name="text">
           <input type="submit" name="story" value="Submit Story"></input>
         </form>
 
-
-        <form action="/logout" method="POST">
-          <input type="submit" name="logout" value="Logout"></input>
-        </form>
+        {{message}} <br>
         
       </h3>
 
-      
+      <h3> Stories You've Contributed To: </h3>
+
+      <h4>
+      {% for title in stories %}      
+      <b> 
+        Title: {{title}} <br>
+      </b>
+      Content: {{stories[title]}}<br><br>
+      {% endfor %}
+      </h4>
+
+      <form action="/logout" method="POST">
+        <input type="submit" name="logout" value="Logout"></input>
+      </form>
+
       <br>
     </body>
   

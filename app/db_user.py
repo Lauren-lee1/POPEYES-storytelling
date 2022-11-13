@@ -9,17 +9,19 @@ import csv       #facilitate CSV I/O
 
 from time import ctime      #use to get time last edited
 
-#delete table if needed (testing purposes)
+# # delete table if needed (testing purposes)
 # DB_FILE="edits.db"
 # db = sqlite3.connect(DB_FILE) 
 # c = db.cursor() 
-# # c.execute("DROP TABLE edits")
+# c.execute("DELETE FROM edits")
 # # c.execute("DELETE FROM users")
 
 # table = c.execute("SELECT * from edits")
 # print(table.fetchall())
 # db.commit()
 # db.close()
+
+
 def create_tables():
     # users table
     DB_FILE="users.db"
@@ -118,25 +120,34 @@ def add_story(title, text):
 
     #adds story into database
     c.execute(f"INSERT INTO edits (title, content, time, latest_change) VALUES ('{title}', '{text}', '{ctime()}', '{text}')")
-
+   
     #print content into terminal
     print(c.execute("SELECT content FROM edits").fetchall())
     db.commit() #save changes
     db.close() #close database
 
-# def add_to_contributed(id, user):
-#     DB_FILE="users.db"
-#     db = sqlite3.connect(DB_FILE)
-#     c = db.cursor()
+def add_to_contributed(title, user):
+    DB_FILE="users.db"
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
 
-#     id_list = c.execute(f"SELECT id_list FROM users WHERE name = '{user}'").fetchone()
-#     if id_list is None:
-#         c.execute(f"UPDATE users SET id_list = '{id}' WHERE name = '{user}'")
-#     else:
-#         c.execute(f"UPDATE users SET id_list = '{id_list}{id}' WHERE name = '{user}'")
+    current_id = get_id(title)
+    print("-------------------------------------------------------")
+    print(current_id)
     
-#     db.commit()
-#     db.close()
+    id_list = str(c.execute(f"SELECT id_list FROM users WHERE name = '{user}'").fetchone()[0])
+    print(id_list)
+
+    if id_list == "None":
+        c.execute(f"UPDATE users SET id_list = '{current_id}' WHERE name = '{user}'")
+    else:
+        current_id = id_list + ", " + current_id
+        c.execute(f"UPDATE users SET id_list = '{current_id}' WHERE name = '{user}'")
+    
+    print(c.execute("SELECT id_list FROM users").fetchall())
+
+    db.commit()
+    db.close()
     
 #used for add_to_contributed(id,user)
 def get_id(title):
@@ -145,11 +156,13 @@ def get_id(title):
     c = db.cursor()
 
     #get id of story with given title
-    id = c.execute(f"SELECT id FROM edits WHERE title = '{title}'").fetchone()
+    current_id = c.execute(f"SELECT id FROM edits WHERE title = '{title}'").fetchone()
 
     db.commit()
     db.close()
-    return id
+    return str(current_id[0])
+
+# print(get_id("Green"))
 
 def story_does_not_exist(title):
     DB_FILE="edits.db"
@@ -165,6 +178,50 @@ def story_does_not_exist(title):
     db.commit() #save changes
     db.close()  #close database
     return exists == False
+
+# outputs a dict containing all the stories user contributed to
+def all_stories_contributed_to(user):
+    DB_FILE="users.db"
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+
+    id_list = c.execute(f"SELECT id_list FROM users WHERE name = '{user}'").fetchone()[0]
+    print(id_list)
+
+    if id_list is None:
+        id_list = []
+    else:
+        id_list = id_list.split(",")
+
+    print(id_list)
+
+    db.commit() #save changes
+    db.close()  #close database
+
+    #now that we have a dict of the story ids the user has contributed to, we can closer users.db and extract the content from edits.db
+    DB_FILE="edits.db"
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+
+    #our final output (huge string)
+    final_dict = {}
+
+    # for each story id in the list, we'll extract the title + content out and put it in final_text
+    for story_id in id_list:
+        #title
+        title = c.execute(f"SELECT title FROM edits WHERE id = {story_id}").fetchone()[0]
+        #content
+        content = c.execute(f"SELECT content FROM edits WHERE id = {story_id}").fetchone()[0]
+        #add to dict
+        final_dict[title] = content
+    db.commit() #save changes
+    db.close()  #close database
+
+    return final_dict
+
+# print(all_stories_contributed_to("ian"))
+# all_stories_contributed_to("ian")
+
 '''
 # with open('students.csv', newline='') as csvfile:
 #     reader = csv.DictReader(csvfile)
