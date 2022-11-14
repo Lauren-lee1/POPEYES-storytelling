@@ -279,7 +279,7 @@ def get_all_stories(user):
     user_view = {}
     for x in all_stories:
         print(x)
-        id = c.execute(f"SELECT id FROM edits WHERE title = {x}").fetchone()[0]
+        #id = c.execute(f"SELECT id FROM edits WHERE title = {x}").fetchone()[0]
         # if see_full(user, id):
         #     user_view[x] = c.execute(f"SELECT content FROM edits WHERE title = {x}").fetchone()[0]
         # else:
