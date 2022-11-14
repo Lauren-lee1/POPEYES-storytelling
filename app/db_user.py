@@ -21,7 +21,10 @@ from time import ctime      #use to get time last edited
 # db.commit()
 # db.close()
 
-
+'''
+Used for both users.db and edits.db
+creates users.db and edits.db if it does not already exists
+'''
 def create_tables():
     # users table
     DB_FILE="users.db"
@@ -45,6 +48,10 @@ def create_tables():
     db.commit() #save changes
     db.close()  #close database
 
+'''
+Used for user.db
+Adds users who have registered into the database
+'''
 def add_user(user, passw):
     DB_FILE="users.db"
 
@@ -62,6 +69,10 @@ def add_user(user, passw):
     db.commit() #save changes
     db.close()  #close database
 
+'''
+Used for user.db
+checks if user is already in the database prior to registration
+'''
 def user_does_not_exists(user):
     DB_FILE="users.db"
     db = sqlite3.connect(DB_FILE) #open if file exists, otherwise create
@@ -84,6 +95,10 @@ def user_does_not_exists(user):
     db.close()  #close database
     return exists == False
 
+'''
+Used for user.db
+Checks if login credentials match any in the database
+'''
 def correct_account(user, passw):
     DB_FILE="users.db"
     db = sqlite3.connect(DB_FILE) #open if file exists, otherwise create
@@ -112,7 +127,10 @@ def correct_account(user, passw):
     db.commit() #save changes
     db.close()  #close database
     return exists
-
+'''
+Used for edits.db
+Creates new story
+'''
 def add_story(title, text):
     DB_FILE="edits.db"
     db = sqlite3.connect(DB_FILE)
@@ -126,6 +144,10 @@ def add_story(title, text):
     db.commit() #save changes
     db.close() #close database
 
+'''
+Used for edits.db
+Adds the story the user contributed to to their id_list
+'''
 def add_to_contributed(title, user):
     DB_FILE="users.db"
     db = sqlite3.connect(DB_FILE)
@@ -149,7 +171,11 @@ def add_to_contributed(title, user):
     db.commit()
     db.close()
     
-#used for add_to_contributed(id,user)
+'''
+Used for edits.db
+Gets id of current story
+    used for add_to_contributed(id,user)
+'''
 def get_id(title):
     DB_FILE="edits.db"
     db = sqlite3.connect(DB_FILE)
@@ -164,6 +190,10 @@ def get_id(title):
 
 # print(get_id("Green"))
 
+'''
+Used for edits.db
+Checks if story exists
+'''
 def story_does_not_exist(title):
     DB_FILE="edits.db"
     db = sqlite3.connect(DB_FILE) #open if file exists, otherwise create
@@ -179,7 +209,10 @@ def story_does_not_exist(title):
     db.close()  #close database
     return exists == False
 
-# outputs a dict containing all the stories user contributed to
+'''
+Used for edits.db
+outputs a dict containing all the stories user contributed to
+'''
 def all_stories_contributed_to(user):
     DB_FILE="users.db"
     db = sqlite3.connect(DB_FILE)
@@ -212,8 +245,10 @@ def all_stories_contributed_to(user):
         title = c.execute(f"SELECT title FROM edits WHERE id = {story_id}").fetchone()[0]
         #content
         content = c.execute(f"SELECT content FROM edits WHERE id = {story_id}").fetchone()[0]
+        #story id
+        id = c.execute(f"SELECT id FROM edits WHERE id = {story_id}").fetchone()[0]
         #add to dict
-        final_dict[title] = content
+        final_dict[id] = [title, content]
     db.commit() #save changes
     db.close()  #close database
 
@@ -222,6 +257,37 @@ def all_stories_contributed_to(user):
 # print(all_stories_contributed_to("ian"))
 # all_stories_contributed_to("ian")
 
+def see_full(user, id):
+    all_contributed = all_stories_contributed_to(user)
+    for x in all_contributed:
+        if x == id:
+            return True
+    return False
+
+def get_all_stories(user):
+    DB_FILE="edits.db"
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+
+    all_stories = c.execute(f"SELECT title FROM edits").fetchall()
+    for tupl in range(len(all_stories)):
+        ret_tupl = ""
+        for y in all_stories[tupl]:
+            ret_tupl = ret_tupl + y
+        all_stories[tupl] = ret_tupl
+
+    user_view = {}
+    for x in all_stories:
+        print(x)
+        id = c.execute(f"SELECT id FROM edits WHERE title = {x}").fetchone()[0]
+        # if see_full(user, id):
+        #     user_view[x] = c.execute(f"SELECT content FROM edits WHERE title = {x}").fetchone()[0]
+        # else:
+        #     user_view[x] = c.execute(f"SELECT latest_change FROM edits WHERE title = {x}").fetchone()[0]
+    db.commit() #save changes
+    db.close()  #close database
+
+    return all_stories
 '''
 # with open('students.csv', newline='') as csvfile:
 #     reader = csv.DictReader(csvfile)

@@ -21,7 +21,7 @@ app.secret_key = os.urandom(32)
 @app.route("/", methods=['GET', 'POST'])
 def disp_loginpage():
     if 'username' in session:
-        return render_template('home.html', username = session['username'], stories = all_stories_contributed_to(session['username']))
+        return render_template('home.html', username = session['username'], all_stories = get_all_stories(user),  stories = all_stories_contributed_to(session['username']))
     return render_template('login.html', message = "Type in a username and password")  
 
 
@@ -44,7 +44,7 @@ def authenticate():
             session['username'] = request.args['username']
         print(session)
 
-        return render_template('home.html', username = user, message = "", stories = all_stories_contributed_to(user))
+        return render_template('home.html', username = user, message = "",all_stories = get_all_stories(user), stories = all_stories_contributed_to(user))
     #pw/user incorrect
     else:
         return render_template('login.html', message = "Please input a correct username and password")
@@ -82,7 +82,7 @@ def register():
             session['username'] = request.args['username']
         print(session)
 
-        return render_template('home.html', username = user, message = "", stories = all_stories_contributed_to(user))
+        return render_template('home.html', username = user, message = "", all_stories = get_all_stories(user), stories = all_stories_contributed_to(user))
     else:
         return render_template('login.html', message = "User already exists")
 
@@ -103,10 +103,14 @@ def submit_story():
         else:
             message = "story already exists"
         print(session)
-        return render_template('home.html', username = session['username'], message = message, stories = all_stories_contributed_to(session['username']))
+        return render_template('home.html', username = session['username'], message = message, all_stories = get_all_stories(user), stories = all_stories_contributed_to(session['username']))
 
     else:
         return render_template('login.html', message = "Type in a username and password")  
+
+@app.route("/story", methods=['GET', 'POST'])
+def view_story():
+    return render_template('story.html')  
 
 
 @app.route("/logout", methods=['GET', 'POST'])

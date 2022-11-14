@@ -18,7 +18,11 @@ time spent: 3-->
       <h3>
         user: {{username}} <br><br>
 
-        TABLE OF CONTENTS <br><br>
+        TABLE OF CONTENTS <br>
+        {% for x in all_stories %}    
+          <a href="/story">{{x}}</a><br>
+        {% endfor %}
+        <br>
 
         Write a NEW story:
         <form action="/submit" method="POST">
@@ -36,11 +40,11 @@ time spent: 3-->
       <h3> Stories You've Contributed To: </h3>
 
       <h4>
-      {% for title in stories %}      
+      {% for id in stories %}      
       <b> 
-        Title: {{title}} <br>
+        Title: {{stories[id][0]}} <br>
       </b>
-      Content: {{stories[title]}}<br><br>
+      Content: {{stories[id][1]}}<br><br>
       {% endfor %}
       </h4>
 
