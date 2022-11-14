@@ -11,10 +11,13 @@ import re
 from flask import Flask, render_template, request, session, redirect
 import os
 from db_user import *
+from db_edits import *
 app = Flask(__name__)    #create Flask object
 
 # creates users.db and edits.db if they don't exist already
-create_tables()
+create_user_table()
+create_edits_table()
+
 exception = "username and pw wrong"
 app.secret_key = os.urandom(32)
 

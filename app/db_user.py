@@ -26,7 +26,7 @@ from time import ctime      #use to get time last edited
 Used for both users.db and edits.db
 creates users.db and edits.db if it does not already exists
 '''
-def create_tables():
+def create_user_table():
     # users table
     DB_FILE="users.db"
 
@@ -34,17 +34,6 @@ def create_tables():
     c = db.cursor()               #facilitate db ops -- you will use cursor to trigger db events
     # users table
     c.execute("CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY, name TEXT, pw TEXT, id_list TEXT, editing TEXT)")
-    
-    db.commit() #save changes
-    db.close()  #close database
-
-    # edits table
-    DB_FILE="edits.db"
-
-    db = sqlite3.connect(DB_FILE) #open if file exists, otherwise create
-    c = db.cursor()               #facilitate db ops -- you will use cursor to trigger db events
-
-    c.execute("CREATE TABLE IF NOT EXISTS edits(id INTEGER PRIMARY KEY, title TEXT, content TEXT, time TEXT, latest_change TEXT)")
     
     db.commit() #save changes
     db.close()  #close database
@@ -128,22 +117,7 @@ def correct_account(user, passw):
     db.commit() #save changes
     db.close()  #close database
     return exists
-'''
-Used for edits.db
-Creates new story
-'''
-def add_story(title, text):
-    DB_FILE="edits.db"
-    db = sqlite3.connect(DB_FILE)
-    c = db.cursor()
 
-    #adds story into database
-    c.execute(f"INSERT INTO edits (title, content, time, latest_change) VALUES ('{title}', '{text}', '{ctime()}', '{text}')")
-   
-    #print content into terminal
-    print(c.execute("SELECT content FROM edits").fetchall())
-    db.commit() #save changes
-    db.close() #close database
 
 '''
 Used for edits.db
@@ -172,43 +146,6 @@ def add_to_contributed(title, user):
     db.commit()
     db.close()
     
-'''
-Used for edits.db
-Gets id of current story
-    used for add_to_contributed(id,user)
-'''
-def get_id(title):
-    DB_FILE="edits.db"
-    db = sqlite3.connect(DB_FILE)
-    c = db.cursor()
-
-    #get id of story with given title
-    current_id = c.execute(f"SELECT id FROM edits WHERE title = '{title}'").fetchone()
-
-    db.commit()
-    db.close()
-    return str(current_id[0])
-
-# print(get_id("Green"))
-
-'''
-Used for edits.db
-Checks if story exists
-'''
-def story_does_not_exist(title):
-    DB_FILE="edits.db"
-    db = sqlite3.connect(DB_FILE) #open if file exists, otherwise create
-    c = db.cursor()               #facilitate db ops -- you will use cursor to trigger db events
-    
-    titlie = c.execute(f"SELECT title FROM edits WHERE title = '{title}'").fetchone()
-    if titlie is None:
-        exists = False
-    else:
-        exists = True
-    
-    db.commit() #save changes
-    db.close()  #close database
-    return exists == False
 
 '''
 Used for edits.db
@@ -232,31 +169,9 @@ def all_stories_contributed_to(user):
     db.commit() #save changes
     db.close()  #close database
 
-    #now that we have a dict of the story ids the user has contributed to, we can closer users.db and extract the content from edits.db
-    DB_FILE="edits.db"
-    db = sqlite3.connect(DB_FILE)
-    c = db.cursor()
+    ret_val = all_stories_contributed_to_helper(id_list,user)
 
-    #our final output (huge string)
-    final_dict = {}
-
-    # for each story id in the list, we'll extract the title + content out and put it in final_text
-    for story_id in id_list:
-        #title
-        title = c.execute(f"SELECT title FROM edits WHERE id = {story_id}").fetchone()[0]
-        #content
-        content = c.execute(f"SELECT content FROM edits WHERE id = {story_id}").fetchone()[0]
-        #story id
-        id = c.execute(f"SELECT id FROM edits WHERE id = {story_id}").fetchone()[0]
-        #add to dict
-        final_dict[id] = [title, content]
-    db.commit() #save changes
-    db.close()  #close database
-
-    return final_dict
-
-# print(all_stories_contributed_to("ian"))
-# all_stories_contributed_to("ian")
+    return ret_val
 
 def see_full(user, story_id):
     all_contributed = all_stories_contributed_to(user)
@@ -279,58 +194,32 @@ def story_content(user, story_id):
     db.close()  #close database
     return ret_val
 
-def get_title(story_id):
+# print(all_stories_contributed_to("ian"))
+# all_stories_contributed_to("ian")
+
+def all_stories_contributed_to_helper(id_list,user):
+     #now that we have a dict of the story ids the user has contributed to, we can closer users.db and extract the content from edits.db
     DB_FILE="edits.db"
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
 
-    title = c.execute(f"SELECT title FROM edits WHERE id = '{story_id}'").fetchone()[0]
+    #our final output (huge string)
+    final_dict = {}
+
+    # for each story id in the list, we'll extract the title + content out and put it in final_text
+    for story_id in id_list:
+        #title
+        title = c.execute(f"SELECT title FROM edits WHERE id = {story_id}").fetchone()[0]
+        #content
+        content = c.execute(f"SELECT content FROM edits WHERE id = {story_id}").fetchone()[0]
+        #story id
+        id = c.execute(f"SELECT id FROM edits WHERE id = {story_id}").fetchone()[0]
+        #add to dict
+        final_dict[id] = [title, content]
     db.commit() #save changes
     db.close()  #close database
 
-    return title
-
-def get_all_stories(user):
-    DB_FILE="edits.db"
-    db = sqlite3.connect(DB_FILE)
-    c = db.cursor()
-
-    all_stories = c.execute(f"SELECT title FROM edits").fetchall()
-    for tupl in range(len(all_stories)):
-        ret_tupl = ""
-        for y in all_stories[tupl]:
-            ret_tupl = ret_tupl + y
-        all_stories[tupl] = ret_tupl
-
-    #assumes title is same but we should allow diff
-    user_view = {}
-    for x in all_stories:
-        print(x)
-        id = c.execute(f"SELECT id FROM edits WHERE title = '{x}'").fetchone()[0]
-        user_view[x] = id
-    db.commit() #save changes
-    db.close()  #close database
-
-    return user_view
-
-def edit_story(user,text,id):
-    DB_FILE="edits.db"
-    db = sqlite3.connect(DB_FILE)
-    c = db.cursor()    
-
-    print(id)
-    # add to edits the latest change and replace content
-    content = c.execute(f"SELECT content FROM edits WHERE id = {id}").fetchone()[0]
-    content += " " + text
-    c.execute(f"UPDATE edits SET latest_change = '{text}' WHERE id = {id}")
-    c.execute(f"UPDATE edits SET content = '{content}' WHERE id = {id}")
-
-    # add this story to the list of contributed in users.db
-    title = c.execute(f"SELECT title FROM edits WHERE id = {id}").fetchone()[0]
-    add_to_contributed(title, user) # update the list of contributed stories
-
-    db.commit() #save changes
-    db.close()  #close database
+    return final_dict
 
 '''
 # with open('students.csv', newline='') as csvfile:

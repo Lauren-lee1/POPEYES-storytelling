@@ -127,7 +127,10 @@ laurenL -- 2022-11-14 10:11
 * output error is user tries to contribute to a story they've already contributed to
 * allow user to go back home or login from the /story/<id> page
 ==============================================================
-
+laurenL -- 2022-11-14 12:00
+--------------------------------------------------------------
+* makde db files into two files depending on which db it edits
+==============================================================
 
 ****next steps llee
 clean up db files 
