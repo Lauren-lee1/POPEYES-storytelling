@@ -11,12 +11,13 @@ import re
 from flask import Flask, render_template, request, session, redirect
 import os
 from db_user import *
-from db_edits import *
+#from db_edits import *
 app = Flask(__name__)    #create Flask object
 
 # creates users.db and edits.db if they don't exist already
-create_user_table()
-create_edits_table()
+# create_user_table()
+# create_edits_table()
+create_tables()
 
 exception = "username and pw wrong"
 app.secret_key = os.urandom(32)
@@ -76,6 +77,8 @@ def register():
             user = request.args['username']
             pw = request.args['pass']
 
+        if user == "" or pw == "":
+            return render_template('login.html', message = "You cannot leave username and password blank")
         ##adds data into db
         if user_does_not_exists(user):
             # add user to students.db

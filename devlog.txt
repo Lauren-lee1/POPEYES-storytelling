@@ -129,12 +129,17 @@ laurenL -- 2022-11-14 10:11
 ==============================================================
 laurenL -- 2022-11-14 12:00
 --------------------------------------------------------------
-* makde db files into two files depending on which db it edits
+* make db files into two files depending on which db it edits
+* try converting fstrings to ?
 ==============================================================
-
-****next steps llee
-clean up db files 
-replace fstrings
-
-****next steps vteo
-get rid of the stories users have already contributed to from the table of contents
+laurenL, vivianTeo, ianJ -- 2022-11-14 13:19
+--------------------------------------------------------------
+* fixing all of lauren's bugs 
+* figuring out why when a user edits a story it is not added to their contributed
+==============================================================
+laurenL-- 2022-11-14 18:11
+--------------------------------------------------------------
+* moved back the db methods into one file
+* fixed bug of user contribution
+* convert fstirngs to ? placeholder
+==============================================================
