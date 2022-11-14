@@ -261,7 +261,8 @@ def all_stories_contributed_to(user):
 def see_full(user, story_id):
     all_contributed = all_stories_contributed_to(user)
     for x in all_contributed:
-        if x == story_id:
+        print(type(x))
+        if x == int(story_id):
             return True
     return False
 

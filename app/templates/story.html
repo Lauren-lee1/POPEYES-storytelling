@@ -24,6 +24,17 @@ time spent: 3-->
         <input type="text" name="text">
         <input type="submit" name="Add" value="Add"></input>
       </form> 
+      <br>
+      {{message}}
+
+      <br>
+      <form action="/home" method="POST">
+        <input type="submit" name="home" value="home"></input>
+      </form>
+      <br>
+      <form action="/logout" method="POST">
+        <input type="submit" name="logout" value="Logout"></input>
+      </form>
 
       <!-- back button -->
       <!-- <form action="/auth" method="POST">

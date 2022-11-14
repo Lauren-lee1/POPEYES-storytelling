@@ -121,6 +121,12 @@ vivianT -- 2022-11-13 23:48
 * Made it so that users can now add to story with a form in the /story route
 * Created the function add_to_story(user,text) in db_user.py so we can add to stories
 ==============================================================
+laurenL -- 2022-11-14 10:11
+--------------------------------------------------------------
+* fix see_full() by converting string id to int to allow comparison
+* output error is user tries to contribute to a story they've already contributed to
+* allow user to go back home or login from the /story/<id> page
+==============================================================
 
 
 ****next steps llee

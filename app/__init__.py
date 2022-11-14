@@ -63,28 +63,31 @@ def authenticate():
 
 @app.route("/home", methods=['GET', 'POST'])
 def register():
-    if request.method == 'POST':
-        user = request.form['username']
-        pw = request.form['pass']
-    if request.method == 'GET':
-        user = request.args['username']
-        pw = request.args['pass']
-
-    ##adds data into db
-    if user_does_not_exists(user):
-        # add user to students.db
-        add_user(user, pw)
-
-        # make sessions
-        if request.method == 'POST':
-            session['username'] = request.form['username']
-        if request.method == 'GET':
-            session['username'] = request.args['username']
-        print(session)
-
-        return render_template('home.html', username = user, message = "", all_stories = get_all_stories(session['username']), stories = all_stories_contributed_to(user))
+    if 'username' in session:
+        return render_template('home.html', username = session['username'], all_stories = get_all_stories(session['username']),  stories = all_stories_contributed_to(session['username']))
     else:
-        return render_template('login.html', message = "User already exists")
+        if request.method == 'POST':
+            user = request.form['username']
+            pw = request.form['pass']
+        if request.method == 'GET':
+            user = request.args['username']
+            pw = request.args['pass']
+
+        ##adds data into db
+        if user_does_not_exists(user):
+            # add user to students.db
+            add_user(user, pw)
+
+            # make sessions
+            if request.method == 'POST':
+                session['username'] = request.form['username']
+            if request.method == 'GET':
+                session['username'] = request.args['username']
+            print(session)
+
+            return render_template('home.html', username = user, message = "", all_stories = get_all_stories(session['username']), stories = all_stories_contributed_to(user))
+        else:
+            return render_template('login.html', message = "User already exists")
 
 @app.route("/submit", methods=['GET', 'POST'])
 def submit_story():
@@ -113,7 +116,7 @@ def view_story(id):
     if 'username' in session:
         title = get_title(id)
         content = story_content(session['username'],id )
-        return render_template('story.html', content = content, title = title, id = id)  
+        return render_template('story.html', content = content, title = title, id = id, message = '')  
     else:
         return render_template('login.html', message = "Type in a username and password")  
 
@@ -125,10 +128,16 @@ def add_to_story(id):
         text = request.args['text']
 
     if 'username' in session:
-        edit_story(session['username'], text, id)
-        print(session)
-        return render_template('home.html', username = session['username'], message = "", all_stories = get_all_stories(session['username']), stories = all_stories_contributed_to(session['username']))
-
+        if(see_full(session['username'], id)) == True:
+            title = get_title(id)
+            content = story_content(session['username'],id )
+            print("************")
+            return render_template('story.html', content = content, title = title, id = id, message = 'you cannot edit this story')  
+        else:
+            edit_story(session['username'], text, id)
+            print(session)
+            print("test")
+            return render_template('home.html', username = session['username'], message = "", all_stories = get_all_stories(session['username']), stories = all_stories_contributed_to(session['username']))
     else:
         return render_template('login.html', message = "Type in a username and password")  
 
