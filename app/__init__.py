@@ -21,7 +21,7 @@ app.secret_key = os.urandom(32)
 @app.route("/", methods=['GET', 'POST'])
 def disp_loginpage():
     if 'username' in session:
-        return render_template('home.html', username = session['username'], all_stories = get_all_stories(user),  stories = all_stories_contributed_to(session['username']))
+        return render_template('home.html', username = session['username'], all_stories = get_all_stories(session['username']),  stories = all_stories_contributed_to(session['username']))
     return render_template('login.html', message = "Type in a username and password")  
 
 
@@ -103,7 +103,7 @@ def submit_story():
         else:
             message = "story already exists"
         print(session)
-        return render_template('home.html', username = session['username'], message = message, all_stories = get_all_stories(user), stories = all_stories_contributed_to(session['username']))
+        return render_template('home.html', username = session['username'], message = message, all_stories = get_all_stories(session['username']), stories = all_stories_contributed_to(session['username']))
 
     else:
         return render_template('login.html', message = "Type in a username and password")  
