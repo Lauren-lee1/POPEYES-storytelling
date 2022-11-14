@@ -105,3 +105,16 @@ vivianT -- 2022-11-13 1:18
 * Created all_stories_contributed_to(user) in db_user.py so that it'll output a dict containing all the stories a user has contributed to with the title being the key and content being the value
 * Successfully incorporated/displayed the stories a user has contributed to using jinja in home.html and the dict that's outputted by all_stories_contributed_to(user)
 ==============================================================
+laurenL -- 2022-11-13 21:27
+--------------------------------------------------------------
+* created table of contents that displayed each story
+* used dynamic routing to display content of story based on whether or not user contributed to the story
+* created story.html as a template to hold contents of a story
+* in __init__.py created view_story(id)
+* in db_user.py created see_full(user, id) which returned whether the user could see the full contents of a story
+* in db_user.py, careted story_content(user, id) which displayed content based on see_full()
+* in db_user.py create get_all_stories(user) which was used to display all the stories in the table of contents
+==============================================================
+****next steps
+clean up db files 
+replace fstrings

@@ -264,6 +264,19 @@ def see_full(user, id):
             return True
     return False
 
+def story_content(user, id):
+    DB_FILE="edits.db"
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+
+    if see_full(user, id):
+        ret_val =  c.execute(f"SELECT content FROM edits WHERE id = '{id}'").fetchone()[0]
+    else:
+        ret_val = c.execute(f"SELECT latest_change FROM edits WHERE id = '{id}'").fetchone()[0]
+    db.commit() #save changes
+    db.close()  #close database
+    return ret_val
+
 def get_all_stories(user):
     DB_FILE="edits.db"
     db = sqlite3.connect(DB_FILE)
@@ -276,18 +289,16 @@ def get_all_stories(user):
             ret_tupl = ret_tupl + y
         all_stories[tupl] = ret_tupl
 
+    #assumes title is same but we should allow diff
     user_view = {}
     for x in all_stories:
         print(x)
-        #id = c.execute(f"SELECT id FROM edits WHERE title = {x}").fetchone()[0]
-        # if see_full(user, id):
-        #     user_view[x] = c.execute(f"SELECT content FROM edits WHERE title = {x}").fetchone()[0]
-        # else:
-        #     user_view[x] = c.execute(f"SELECT latest_change FROM edits WHERE title = {x}").fetchone()[0]
+        id = c.execute(f"SELECT id FROM edits WHERE title = '{x}'").fetchone()[0]
+        user_view[x] = id
     db.commit() #save changes
     db.close()  #close database
 
-    return all_stories
+    return user_view
 '''
 # with open('students.csv', newline='') as csvfile:
 #     reader = csv.DictReader(csvfile)

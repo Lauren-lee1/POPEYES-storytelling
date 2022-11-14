@@ -108,9 +108,13 @@ def submit_story():
     else:
         return render_template('login.html', message = "Type in a username and password")  
 
-@app.route("/story", methods=['GET', 'POST'])
-def view_story():
-    return render_template('story.html')  
+@app.route("/story/<path:id>", methods=['GET', 'POST'])
+def view_story(id):
+    if 'username' in session:
+        content = story_content(session['username'],id )
+        return render_template('story.html', content = content)  
+    else:
+        return render_template('login.html', message = "Type in a username and password")  
 
 
 @app.route("/logout", methods=['GET', 'POST'])
