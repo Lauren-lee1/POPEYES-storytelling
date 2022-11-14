@@ -14,8 +14,21 @@ time spent: 3-->
         POPEYES: Lauren Lee, Vivian Teo, Ian Jiang
       </h1>
       <br>
+      <h3>{{title}}</h3>
       <p>
         {{content}}
       </p>
+
+      <h3>Add to Story:</h3>
+      <form action="/edit/{{id}}" method="POST">
+        <input type="text" name="text">
+        <input type="submit" name="Add" value="Add"></input>
+      </form> 
+
+      <!-- back button -->
+      <!-- <form action="/auth" method="POST">
+        <input type="submit" name="back" value="Back"></input>
+      </form> -->
+
     </body>
 </html>

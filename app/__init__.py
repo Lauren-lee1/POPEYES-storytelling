@@ -111,10 +111,27 @@ def submit_story():
 @app.route("/story/<path:id>", methods=['GET', 'POST'])
 def view_story(id):
     if 'username' in session:
+        title = get_title(id)
         content = story_content(session['username'],id )
-        return render_template('story.html', content = content)  
+        return render_template('story.html', content = content, title = title, id = id)  
     else:
         return render_template('login.html', message = "Type in a username and password")  
+
+@app.route("/edit/<path:id>", methods=['GET', 'POST'])
+def add_to_story(id):
+    if request.method == 'POST':
+        text = request.form['text']
+    if request.method == 'GET':
+        text = request.args['text']
+
+    if 'username' in session:
+        edit_story(session['username'], text, id)
+        print(session)
+        return render_template('home.html', username = session['username'], message = "", all_stories = get_all_stories(session['username']), stories = all_stories_contributed_to(session['username']))
+
+    else:
+        return render_template('login.html', message = "Type in a username and password")  
+
 
 
 @app.route("/logout", methods=['GET', 'POST'])

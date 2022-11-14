@@ -13,11 +13,12 @@ from time import ctime      #use to get time last edited
 # DB_FILE="edits.db"
 # db = sqlite3.connect(DB_FILE) 
 # c = db.cursor() 
-# c.execute("DELETE FROM edits")
-# # c.execute("DELETE FROM users")
+# # c.execute("DELETE FROM edits")
+# # # c.execute("DELETE FROM users")
 
 # table = c.execute("SELECT * from edits")
 # print(table.fetchall())
+
 # db.commit()
 # db.close()
 
@@ -257,25 +258,36 @@ def all_stories_contributed_to(user):
 # print(all_stories_contributed_to("ian"))
 # all_stories_contributed_to("ian")
 
-def see_full(user, id):
+def see_full(user, story_id):
     all_contributed = all_stories_contributed_to(user)
     for x in all_contributed:
-        if x == id:
+        if x == story_id:
             return True
     return False
 
-def story_content(user, id):
+def story_content(user, story_id):
     DB_FILE="edits.db"
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
 
-    if see_full(user, id):
-        ret_val =  c.execute(f"SELECT content FROM edits WHERE id = '{id}'").fetchone()[0]
+    if see_full(user, story_id):
+        ret_val =  c.execute(f"SELECT content FROM edits WHERE id = '{story_id}'").fetchone()[0]
     else:
-        ret_val = c.execute(f"SELECT latest_change FROM edits WHERE id = '{id}'").fetchone()[0]
+        ret_val = c.execute(f"SELECT latest_change FROM edits WHERE id = '{story_id}'").fetchone()[0]
     db.commit() #save changes
     db.close()  #close database
     return ret_val
+
+def get_title(story_id):
+    DB_FILE="edits.db"
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+
+    title = c.execute(f"SELECT title FROM edits WHERE id = '{story_id}'").fetchone()[0]
+    db.commit() #save changes
+    db.close()  #close database
+
+    return title
 
 def get_all_stories(user):
     DB_FILE="edits.db"
@@ -299,6 +311,26 @@ def get_all_stories(user):
     db.close()  #close database
 
     return user_view
+
+def edit_story(user,text,id):
+    DB_FILE="edits.db"
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()    
+
+    print(id)
+    # add to edits the latest change and replace content
+    content = c.execute(f"SELECT content FROM edits WHERE id = {id}").fetchone()[0]
+    content += " " + text
+    c.execute(f"UPDATE edits SET latest_change = '{text}' WHERE id = {id}")
+    c.execute(f"UPDATE edits SET content = '{content}' WHERE id = {id}")
+
+    # add this story to the list of contributed in users.db
+    title = c.execute(f"SELECT title FROM edits WHERE id = {id}").fetchone()[0]
+    add_to_contributed(title, user) # update the list of contributed stories
+
+    db.commit() #save changes
+    db.close()  #close database
+
 '''
 # with open('students.csv', newline='') as csvfile:
 #     reader = csv.DictReader(csvfile)

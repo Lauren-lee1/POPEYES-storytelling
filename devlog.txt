@@ -115,6 +115,17 @@ laurenL -- 2022-11-13 21:27
 * in db_user.py, careted story_content(user, id) which displayed content based on see_full()
 * in db_user.py create get_all_stories(user) which was used to display all the stories in the table of contents
 ==============================================================
-****next steps
+vivianT -- 2022-11-13 23:48
+--------------------------------------------------------------
+* Made it so that the title of each story is displayed in the /story route as well (not just content)
+* Made it so that users can now add to story with a form in the /story route
+* Created the function add_to_story(user,text) in db_user.py so we can add to stories
+==============================================================
+
+
+****next steps llee
 clean up db files 
 replace fstrings
+
+****next steps vteo
+get rid of the stories users have already contributed to from the table of contents
