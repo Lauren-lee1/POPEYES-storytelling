@@ -44,7 +44,7 @@ def authenticate():
             session['username'] = request.args['username']
         print(session)
 
-        return render_template('home.html', username = user, message = "",all_stories = get_all_stories(user), stories = all_stories_contributed_to(user))
+        return render_template('home.html', username = user, message = "",all_stories = get_all_stories(session['username']), stories = all_stories_contributed_to(user))
     #pw/user incorrect
     else:
         return render_template('login.html', message = "Please input a correct username and password")
@@ -82,7 +82,7 @@ def register():
             session['username'] = request.args['username']
         print(session)
 
-        return render_template('home.html', username = user, message = "", all_stories = get_all_stories(user), stories = all_stories_contributed_to(user))
+        return render_template('home.html', username = user, message = "", all_stories = get_all_stories(session['username']), stories = all_stories_contributed_to(user))
     else:
         return render_template('login.html', message = "User already exists")
 
