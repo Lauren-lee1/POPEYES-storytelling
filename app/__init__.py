@@ -39,7 +39,7 @@ def authenticate():
         pw = request.args['pass']
 
     #pw and user correct
-    if correct_account(user,pw):
+    if valid_login(user,pw):
 
         #make sessions
         if request.method == 'POST':
@@ -55,15 +55,15 @@ def authenticate():
 
 
     #empty pw or user
-    if "" == user and "" == pw:
-        return render_template('login.html', message = "Please type in a username and password")
-    elif "" == user:
-        return render_template('login.html', message = "Please type in a username")
-    elif "" == pw:
-        return render_template('login.html', message = "Please type in a password")    
-    #unidentified error
-    else:
-        return render_template('login.html', message = "unidentified")
+    # if "" == user and "" == pw:
+    #     return render_template('login.html', message = "Please type in a username and password")
+    # elif "" == user:
+    #     return render_template('login.html', message = "Please type in a username")
+    # elif "" == pw:
+    #     return render_template('login.html', message = "Please type in a password")    
+    # #unidentified error
+    # else:
+    #     return render_template('login.html', message = "unidentified")
 
 @app.route("/home", methods=['GET', 'POST'])
 def register():
@@ -106,7 +106,7 @@ def submit_story():
 
     if 'username' in session:
         if story_does_not_exist(title):
-            add_story(title, text) # add the text to the database
+            create_story(title, text) # add the text to the database
             add_to_contributed(title, session['username']) # update the list of contributed stories
             message = ""
         else:
@@ -134,7 +134,7 @@ def add_to_story(id):
         text = request.args['text']
 
     if 'username' in session:
-        if(see_full(session['username'], id)) == True:
+        if(has_contributed_to(session['username'], id)): # you can't add to a story you contributed to already
             title = get_title(id)
             content = story_content(session['username'],id )
             print("************")

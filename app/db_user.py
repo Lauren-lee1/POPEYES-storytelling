@@ -100,7 +100,7 @@ def user_does_not_exists(user):
 Used for user.db
 Checks if login credentials match any in the database
 '''
-def correct_account(user, passw):
+def valid_login(user, passw):
     DB_FILE="users.db"
     db = sqlite3.connect(DB_FILE) #open if file exists, otherwise create
     c = db.cursor()               #facilitate db ops -- you will use cursor to trigger db events
@@ -133,7 +133,7 @@ def correct_account(user, passw):
 Used for edits.db
 Creates new story
 '''
-def add_story(title, text):
+def create_story(title, text):
     DB_FILE="edits.db"
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
@@ -157,18 +157,18 @@ def add_to_contributed(title, user):
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
 
-    current_id = get_id(title)
+    current_id = get_id(title) #get the id of the story the user contributed to
     print("-------------------------------------------------------")
     print(current_id)
     
-    id_list = str(c.execute("SELECT id_list FROM users WHERE name = ?", (user,)).fetchone()[0])
+    id_list = str(c.execute("SELECT id_list FROM users WHERE name = ?", (user,)).fetchone()[0]) #get current list of ids the user has contributed to
     print(id_list)
 
-    if id_list == "None":
+    if id_list == "None": #check if list is empty
         print("testing testing++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
         c.execute("UPDATE users SET id_list = ? WHERE name = ?", (current_id, user))
     else:
-        current_id = id_list + "," + current_id
+        current_id = id_list + "," + current_id #add newly contributed story to the list
         c.execute("UPDATE users SET id_list = ? WHERE name = ?", (current_id, user))
     
     print(c.execute("SELECT id_list FROM users").fetchall())
@@ -178,7 +178,7 @@ def add_to_contributed(title, user):
     
 '''
 Used for edits.db
-Gets id of current story
+Gets id of inputed story
     used for add_to_contributed(id,user)
 '''
 def get_id(title):
@@ -236,7 +236,7 @@ def all_stories_contributed_to(user):
     db.commit() #save changes
     db.close()  #close database
 
-    #now that we have a dict of the story ids the user has contributed to, we can closer users.db and extract the content from edits.db
+    #now that we have a dict of the story ids the user has contributed to, we can close users.db and extract the content from edits.db
     DB_FILE="edits.db"
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
@@ -266,11 +266,13 @@ def all_stories_contributed_to(user):
 
 # print(all_stories_contributed_to("ian"))
 # all_stories_contributed_to("ian")
-
-def see_full(user, story_id):
+"""
+used to see if the user has contributed to story with id of story_id
+"""
+def has_contributed_to(user, story_id):
     all_contributed = all_stories_contributed_to(user)
     print("++++++++++++++++++++++++++++++++++")
-    for x in all_contributed:
+    for x in all_contributed: #for each id in all_contributed, see if story_id equals the id.
         print(type(x))
         print("what is x")
         print(x)
@@ -278,19 +280,25 @@ def see_full(user, story_id):
             return True
     return False
 
+"""
+returns the correct contents of the story the user should see
+"""
 def story_content(user, story_id):
     DB_FILE="edits.db"
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
 
-    if see_full(user, story_id):
-        ret_val =  c.execute("SELECT content FROM edits WHERE id = ?", (story_id,)).fetchone()[0]
+    if has_contributed_to(user, story_id): # if the user has contributed to story with id as story_id
+        ret_val =  c.execute("SELECT content FROM edits WHERE id = ?", (story_id,)).fetchone()[0] # return full story
     else:
-        ret_val = c.execute("SELECT latest_change FROM edits WHERE id = ?", (story_id,)).fetchone()[0]
+        ret_val = c.execute("SELECT latest_change FROM edits WHERE id = ?", (story_id,)).fetchone()[0] # else return latest change to story
     db.commit() #save changes
     db.close()  #close database
     return ret_val
 
+"""
+returns title of story with id of story_id
+"""
 def get_title(story_id):
     DB_FILE="edits.db"
     db = sqlite3.connect(DB_FILE)
@@ -302,6 +310,9 @@ def get_title(story_id):
 
     return title
 
+"""
+returns a dict for all the stories in the database to be displayed in the table of contents
+"""
 def get_all_stories(user):
     DB_FILE="edits.db"
     db = sqlite3.connect(DB_FILE)
@@ -325,6 +336,9 @@ def get_all_stories(user):
 
     return user_view
 
+"""
+adds text to the story with the inputed id. updates content and latest_change for the story and id_list for the user
+"""
 def edit_story(user,text,id):
     DB_FILE="edits.db"
     db = sqlite3.connect(DB_FILE)
