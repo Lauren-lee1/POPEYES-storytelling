@@ -1,13 +1,12 @@
 # POPEYES: Lauren Lee, Vivian Teo, Ian Jiang
 # SoftDev
 # P00 -- Storytelling
-# 2022-11-0
-# time spent: 
+# 2022-11-15
+# time spent: 23.3
 
 import sqlite3   #enable control of an sqlite database
 import csv       #facilitate CSV I/O
 
-from time import ctime      #use to get time last edited
 
 # # delete table if needed (testing purposes)
 # DB_FILE="edits.db"
@@ -64,6 +63,7 @@ def add_user(user, passw):
     
     #prints users table
     table = c.execute("SELECT * from users")
+    print("user table from add_user() call")
     print(table.fetchall())
 
     db.commit() #save changes
@@ -78,7 +78,6 @@ def user_does_not_exists(user):
     db = sqlite3.connect(DB_FILE) #open if file exists, otherwise create
     c = db.cursor()               #facilitate db ops -- you will use cursor to trigger db events
     
-    print("testing this ?")
     namie = c.execute("SELECT name FROM users WHERE name = ?", (user,)).fetchone()
     # print(namie)
     if namie is None:
@@ -88,6 +87,7 @@ def user_does_not_exists(user):
 
     # prints users table
     table = c.execute("SELECT * from users")
+    print("user table from user_does_not_exists() call")
     print(table.fetchall())
     
     print(exists)
@@ -107,6 +107,7 @@ def valid_login(user, passw):
     
     # check if username is in table
     namie = c.execute("SELECT name FROM users WHERE name = ?", (user,)).fetchone()
+    print("print if user that matches inputed user, none if no match")
     print(namie)
     if namie is None:
         exists = False
@@ -114,16 +115,18 @@ def valid_login(user, passw):
         exists = True
 
     # check if password is in table
-    print("testing this ?")
     passie = c.execute("SELECT pw FROM users WHERE pw =?", (passw,)).fetchone()
+    print("print if pw that matches inputed pw, none if no match")
     print(passie)
     if passie is None:
         exists = False
 
     # prints table
     table = c.execute("SELECT * from users")
+    print("user table from valid_login() call")
     print(table.fetchall())
     
+    print("whether or not login exists")
     print(exists)
 
     db.commit() #save changes
@@ -139,17 +142,19 @@ def create_story(title, text):
     c = db.cursor()
 
     #adds story into database
-    data = [title, text, ctime(), text]
-    c.execute("INSERT INTO edits (title, content, time, latest_change) VALUES(?,?,?,?)", data)
+    data = [title, text, text]
+    c.execute("INSERT INTO edits (title, content, latest_change) VALUES(?,?,?)", data)
    # c.execute(f"INSERT INTO edits (title, content, time, latest_change) VALUES ('{title}', '{text}', '{ctime()}', '{text}')")
    
     #print content into terminal
+    print("contents of story when created")
     print(c.execute("SELECT content FROM edits").fetchall())
+    
     db.commit() #save changes
     db.close() #close database
 
 '''
-Used for edits.db
+Used for edits.db and user.db
 Adds the story the user contributed to to their id_list
 '''
 def add_to_contributed(title, user):
@@ -158,19 +163,21 @@ def add_to_contributed(title, user):
     c = db.cursor()
 
     current_id = get_id(title) #get the id of the story the user contributed to
-    print("-------------------------------------------------------")
+    print("printing id of the title user contributed to")
     print(current_id)
     
     id_list = str(c.execute("SELECT id_list FROM users WHERE name = ?", (user,)).fetchone()[0]) #get current list of ids the user has contributed to
+    print("printing id list")
     print(id_list)
 
     if id_list == "None": #check if list is empty
-        print("testing testing++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        print("id list is empty")
         c.execute("UPDATE users SET id_list = ? WHERE name = ?", (current_id, user))
     else:
         current_id = id_list + "," + current_id #add newly contributed story to the list
         c.execute("UPDATE users SET id_list = ? WHERE name = ?", (current_id, user))
     
+    print("all id lists")
     print(c.execute("SELECT id_list FROM users").fetchall())
 
     db.commit()
@@ -192,8 +199,6 @@ def get_id(title):
     db.commit()
     db.close()
     return str(current_id[0])
-
-# print(get_id("Green"))
 
 '''
 Used for edits.db
@@ -224,6 +229,7 @@ def all_stories_contributed_to(user):
     c = db.cursor()
 
     id_list = str(c.execute('SELECT id_list FROM users WHERE name = ?', (user,)).fetchone()[0])
+    print("id list of user")
     print(id_list)
 
     if id_list == 'None':
@@ -231,7 +237,8 @@ def all_stories_contributed_to(user):
     else:
         id_list = id_list.split(",")
 
-    print(id_list)
+    print("id list of user as list")
+    print(id_list) #list of ids of all titles user contributed to
 
     db.commit() #save changes
     db.close()  #close database
@@ -251,7 +258,7 @@ def all_stories_contributed_to(user):
     else:
     # for each story id in the list, we'll extract the title + content out and put it in final_text
         for story_id in id_list:
-            print("++++++++++" + story_id)
+            print("story id in id list:" + story_id)
             #title
             title = c.execute("SELECT title FROM edits WHERE id = ?", (story_id,)).fetchone()[0]
             #content
@@ -263,24 +270,26 @@ def all_stories_contributed_to(user):
         db.commit() #save changes
         db.close()  #close database
         return final_dict
-
 # print(all_stories_contributed_to("ian"))
 # all_stories_contributed_to("ian")
+
 """
 used to see if the user has contributed to story with id of story_id
 """
 def has_contributed_to(user, story_id):
     all_contributed = all_stories_contributed_to(user)
-    print("++++++++++++++++++++++++++++++++++")
+    print("calling has_contributed_to()")
+    print(all_contributed)
     for x in all_contributed: #for each id in all_contributed, see if story_id equals the id.
         print(type(x))
-        print("what is x")
+        print("what is key of all_contributed")
         print(x)
         if int(x) == int(story_id):
             return True
     return False
 
 """
+used in edits.db
 returns the correct contents of the story the user should see
 """
 def story_content(user, story_id):
@@ -288,6 +297,7 @@ def story_content(user, story_id):
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
 
+    #depends on if user has contributed to a story or not
     if has_contributed_to(user, story_id): # if the user has contributed to story with id as story_id
         ret_val =  c.execute("SELECT content FROM edits WHERE id = ?", (story_id,)).fetchone()[0] # return full story
     else:
@@ -297,6 +307,7 @@ def story_content(user, story_id):
     return ret_val
 
 """
+used in edits.db
 returns title of story with id of story_id
 """
 def get_title(story_id):
@@ -311,6 +322,7 @@ def get_title(story_id):
     return title
 
 """
+used in edits.db
 returns a dict for all the stories in the database to be displayed in the table of contents
 """
 def get_all_stories(user):
@@ -318,6 +330,7 @@ def get_all_stories(user):
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
 
+    #fetches all stories from edits
     all_stories = c.execute("SELECT title FROM edits").fetchall()
     for tupl in range(len(all_stories)):
         ret_tupl = ""
@@ -328,6 +341,7 @@ def get_all_stories(user):
     #assumes title is same but we should allow diff
     user_view = {}
     for x in all_stories:
+        print("each title")
         print(x)
         id = c.execute("SELECT id FROM edits WHERE title = ?", (x,)).fetchone()[0]
         user_view[x] = id
@@ -337,13 +351,15 @@ def get_all_stories(user):
     return user_view
 
 """
-adds text to the story with the inputed id. updates content and latest_change for the story and id_list for the user
+used in edits.db
+adds text to an already existing story with the inputed id. updates content and latest_change for the story and id_list for the user
 """
 def edit_story(user,text,id):
     DB_FILE="edits.db"
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()    
 
+    print("id of story")
     print(id)
     # add to edits the latest change and replace content
     content = c.execute("SELECT content FROM edits WHERE id = ?", (id,)).fetchone()[0]
